@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeoBank - Sistema Bancário</title>
+  <style>
+    :root {
+      --primary: #1e293b;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+    }
+
+    header h1 span {
+      color: #38bdf8;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: transparent; border: 1px solid #fff; color: #fff; }
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Cards e Grids */
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card h3 {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Formulários */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* Tabelas */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .badge {
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-active { background: #dcfce7; color: #166534; }
+    .badge-closed { background: #fee2e2; color: #991b1b; }
+
+    /* Cartão de Débito Visual */
+    .debit-card-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .debit-card {
+      width: 340px;
+      height: 210px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
+      color: #fff;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .debit-card .bank-logo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .debit-card .chip {
+      width: 45px;
+      height: 34px;
+      background: linear-gradient(135deg, #fde047, #ca8a04);
+      border-radius: 6px;
+    }
+
+    .debit-card .card-number {
+      font-size: 1.25rem;
+      letter-spacing: 2.5px;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0.5rem 0;
+    }
+
+    .debit-card .card-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .debit-card .card-footer span {
+      display: block;
+      font-size: 0.65rem;
+      opacity: 0.75;
+    }
+
+    /* Resultado da Simulação de Financiamento */
+    .sim-summary {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .sim-item span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .sim-item strong {
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    .table-scroll {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 0.75rem;
+    }
+
+    /* Login Box */
+    .login-container {
+      max-width: 420px;
+      margin: 4rem auto;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: -2px;
+    }
+
+    .text-success { color: var(--success); font-weight: 600; }
+    .text-danger { color: var(--danger); font-weight: 600; }
+
+    /* Estilos exclusivos para impressão do cartão */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-card-area, #printable-card-area * {
+        visibility: visible;
+      }
+      #printable-card-area {
+        position: fixed;
+        left: 50%;
+        top: 30%;
+        transform: translate(-50%, -50%);
+      }
+      .debit-card {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-shadow: none;
+        border: 1px solid #000;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Neo<span>Bank</span></h1>
+    <div id="user-nav" class="hidden">
+      <span id="nav-user-name" style="margin-right: 1rem; font-size: 0.9rem;"></span>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Sair</button>
+    </div>
+  </header>
+
+  <!-- TELA DE LOGIN / ACESSO -->
+  <div id="auth-view" class="container login-container">
+    <div class="card">
+      <div class="tabs">
+        <div class="tab active" id="tab-client" onclick="switchLoginTab('client')">Acesso Cliente</div>
+        <div class="tab" id="tab-admin" onclick="switchLoginTab('admin')">Acesso Admin</div>
+      </div>
+
+      <!-- Login Cliente -->
+      <form id="client-login-form" onsubmit="loginClient(event)">
+        <div class="form-group">
+          <label>Número da Conta</label>
+          <input type="text" id="login-account" placeholder="Ex: 1001" required />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="login-password" placeholder="••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar na Conta</button>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 1rem; text-align: center;">
+          Conta teste: <strong>1001</strong> | Senha: <strong>1234</strong>
+        </p>
+      </form>
+
+      <!-- Login Admin -->
+      <form id="admin-login-form" class="hidden" onsubmit="loginAdmin(event)">
+        <div class="form-group">
+          <label>Usuário Administrador</label>
+          <input type="text" id="admin-user" value="admin" required />
+        </div>
+        <div class="form-group">
+          <label>Senha Administrador</label>
+          <input type="password" id="admin-pass" value="admin123" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar como Admin</button>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 1rem; text-align: center;">
+          Padrão: <strong>admin</strong> / <strong>admin123</strong>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- PAINEL DO ADMINISTRADOR -->
+  <div id="admin-view" class="container hidden">
+    <h2 style="margin-bottom: 1rem;">Dashboard Administrativo</h2>
+
+    <!-- Indicadores Gerais -->
+    <div class="grid-3">
+      <div class="card stat-card">
+        <h3>Saldo Total Custodiado</h3>
+        <p id="admin-total-balance">R$ 0,00</p>
+      </div>
+      <div class="card stat-card">
+        <h3>Contas Ativas</h3>
+        <p id="admin-active-accounts">0</p>
+      </div>
+      <div class="card stat-card">
+        <h3>Contas Encerradas</h3>
+        <p id="admin-closed-accounts">0</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Abertura de Conta -->
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">Abrir Nova Conta</h3>
+        <form onsubmit="createAccount(event)">
+          <div class="form-group">
+            <label>Nome Completo do Titular</label>
+            <input type="text" id="new-name" required placeholder="Ex: Maria Oliveira" />
+          </div>
+          <div class="form-group">
+            <label>CPF</label>
+            <input type="text" id="new-cpf" required placeholder="000.000.000-00" />
+          </div>
+          <div class="form-group">
+            <label>Depósito Inicial (R$)</label>
+            <input type="number" id="new-deposit" step="0.01" min="0" value="100.00" required />
+          </div>
+          <div class="form-group">
+            <label>Senha de Acesso</label>
+            <input type="password" id="new-password" required placeholder="Crie uma senha" />
+          </div>
+          <button type="submit" class="btn btn-success" style="width: 100%;">Abrir Conta & Gerar Cartão</button>
+        </form>
+      </div>
+
+      <!-- Visualização do Cartão Recém-Criado para Impressão -->
+      <div class="card" id="new-card-preview-box">
+        <h3 style="margin-bottom: 1rem;">Cartão de Débito Emitido</h3>
+        <p id="no-card-msg" style="color: var(--muted); font-size: 0.9rem;">
+          Abra uma nova conta ou clique em "Cartão" na lista abaixo para visualizar e imprimir o cartão de débito do cliente.
+        </p>
+
+        <div id="printable-card-area" class="debit-card-wrapper hidden">
+          <div class="debit-card">
+            <div class="bank-logo">
+              <span>NeoBank</span>
+              <span style="font-size: 0.8rem; opacity: 0.8;">DÉBITO</span>
+            </div>
+            <div class="chip"></div>
+            <div class="card-number" id="card-display-number">0000 0000 0000 0000</div>
+            <div class="card-footer">
+              <div>
+                <span>Titular</span>
+                <strong id="card-display-name">NOME DO CLIENTE</strong>
+              </div>
+              <div>
+                <span>Validade</span>
+                <strong id="card-display-exp">12/30</strong>
+              </div>
+              <div>
+                <span>CVV</span>
+                <strong id="card-display-cvv">123</strong>
+              </div>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--muted);">
+            Conta Nº: <strong id="card-display-account">1001</strong>
+          </p>
+          <button class="btn btn-primary no-print" onclick="window.print()">🖨️ Imprimir Cartão</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Contas -->
+    <div class="card">
+      <h3>Gerenciamento de Contas</h3>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Conta</th>
+              <th>Titular</th>
+              <th>CPF</th>
+              <th>Saldo</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="admin-accounts-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAINEL DO CLIENTE -->
+  <div id="client-view" class="container hidden">
+    <h2 style="margin-bottom: 1rem;">Minha Conta</h2>
+
+    <div class="grid-3">
+      <div class="card stat-card">
+        <h3>Saldo Disponível</h3>
+        <p id="client-balance">R$ 0,00</p>
+      </div>
+      <div class="card stat-card">
+        <h3>Número da Conta</h3>
+        <p id="client-account-num">0000</p>
+      </div>
+      <div class="card stat-card">
+        <h3>Status da Conta</h3>
+        <p id="client-status" style="font-size: 1.3rem;">Ativa</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Operações Financeiras -->
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">Movimentação Financeira</h3>
+        <div class="form-group">
+          <label>Valor da Operação (R$)</label>
+          <input type="number" id="tx-amount" step="0.01" min="0.01" placeholder="0.00" />
+        </div>
+        <div class="form-group">
+          <label>Descrição (Opcional)</label>
+          <input type="text" id="tx-desc" placeholder="Ex: Depósito via PIX, Pagamento..." />
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn btn-success" style="flex: 1;" onclick="handleTransaction('deposit')">+ Depositar</button>
+          <button class="btn btn-danger" style="flex: 1;" onclick="handleTransaction('withdraw')">- Sacar</button>
+        </div>
+      </div>
+
+      <!-- Cartão de Débito do Cliente -->
+      <div class="card">
+        <h3 style="margin-bottom: 1rem;">Meu Cartão de Débito</h3>
+        <div id="client-card-container" class="debit-card-wrapper">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULADOR DE FINANCIAMENTO -->
+    <div class="card">
+      <h3 style="margin-bottom: 1rem;">Simulação de Financiamento</h3>
+      <div class="grid-2">
+        <form onsubmit="simulateFinancing(event)">
+          <div class="form-group">
+            <label>Finalidade do Financiamento</label>
+            <select id="fin-purpose">
+              <option value="Crédito Pessoal">Crédito Pessoal</option>
+              <option value="Financiamento de Veículo">Financiamento de Veículo</option>
+              <option value="Financiamento Imobiliário">Financiamento Imobiliário</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Valor do Financiamento (R$)</label>
+            <input type="number" id="fin-amount" step="100" min="500" value="10000" required />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Prazo (Meses)</label>
+              <input type="number" id="fin-months" min="2" max="360" value="24" required />
+            </div>
+            <div class="form-group">
+              <label>Taxa de Juros (% a.m.)</label>
+              <input type="number" id="fin-rate" step="0.01" min="0.1" max="20" value="1.49" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Sistema de Amortização</label>
+            <select id="fin-system">
+              <option value="PRICE">Tabela PRICE (Parcelas Fixas)</option>
+              <option value="SAC">Tabela SAC (Parcelas Decrescentes)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Calcular Simulação</button>
+        </form>
+
+        <!-- Resultado da Simulação -->
+        <div>
+          <div id="fin-placeholder" style="color: var(--muted); font-size: 0.9rem; padding-top: 0.5rem;">
+            Preencha os parâmetros ao lado e clique em <strong>Calcular Simulação</strong> para visualizar o valor das parcelas, juros totais e tabela de amortização.
+          </div>
+
+          <div id="fin-result-box" class="sim-summary hidden">
+            <div class="sim-grid">
+              <div class="sim-item">
+                <span>1ª Parcela</span>
+                <strong id="sim-first-installment">R$ 0,00</strong>
+              </div>
+              <div class="sim-item">
+                <span>Última Parcela</span>
+                <strong id="sim-last-installment">R$ 0,00</strong>
+              </div>
+              <div class="sim-item">
+                <span>Total de Juros</span>
+                <strong id="sim-total-interest" class="text-danger">R$ 0,00</strong>
+              </div>
+              <div class="sim-item">
+                <span>Valor Total a Pagar</span>
+                <strong id="sim-total-payable">R$ 0,00</strong>
+              </div>
+            </div>
+
+            <button class="btn btn-success" style="width: 100%; margin-bottom: 0.75rem;" onclick="contractFinancing()">
+              ✅ Contratar e Creditar na Conta
+            </button>
+
+            <details>
+              <summary style="cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--accent);">
+                Ver Cronograma de Parcelas
+              </summary>
+              <div class="table-scroll">
+                <table style="margin-top: 0;">
+                  <thead>
+                    <tr>
+                      <th>Nº</th>
+                      <th>Parcela</th>
+                      <th>Juros</th>
+                      <th>Amort.</th>
+                      <th>Saldo Dev.</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sim-schedule-table"></tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extrato Bancário -->
+    <div class="card">
+      <h3>Extrato Detalhado</h3>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Data / Hora</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody id="client-statement-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'neobank_accounts_v1';
+    let currentUser = null;
+    let lastSimulation = null; // Armazena a última simulação calculada
+
+    function initStorage() {
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        const defaultAccounts = [
+          {
+            accountNumber: '1001',
+            name: 'João Silva',
+            cpf: '123.456.789-00',
+            password: '1234',
+            balance: 1500.00,
+            status: 'active',
+            card: {
+              number: '4532 8910 3412 7789',
+              expiry: '11/31',
+              cvv: '482'
+            },
+            transactions: [
+              {
+                date: new Date().toLocaleString('pt-BR'),
+                type: 'deposit',
+                description: 'Depósito de Abertura',
+                amount: 1500.00
+              }
+            ]
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultAccounts));
+      }
+    }
+
+    function getAccounts() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+    }
+
+    function formatCurrency(val) {
+      return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function switchLoginTab(tab) {
+      document.getElementById('tab-client').classList.toggle('active', tab === 'client');
+      document.getElementById('tab-admin').classList.toggle('active', tab === 'admin');
+      document.getElementById('client-login-form').classList.toggle('hidden', tab !== 'client');
+      document.getElementById('admin-login-form').classList.toggle('hidden', tab !== 'admin');
+    }
+
+    function loginAdmin(e) {
+      e.preventDefault();
+      const user = document.getElementById('admin-user').value;
+      const pass = document.getElementById('admin-pass').value;
+
+      if (user === 'admin' && pass === 'admin123') {
+        currentUser = { role: 'admin' };
+        document.getElementById('auth-view').classList.add('hidden');
+        document.getElementById('admin-view').classList.remove('hidden');
+        document.getElementById('user-nav').classList.remove('hidden');
+        document.getElementById('nav-user-name').textContent = 'Perfil: Administrador';
+        renderAdminDashboard();
+      } else {
+        alert('Credenciais de administrador inválidas.');
+      }
+    }
+
+    function loginClient(e) {
+      e.preventDefault();
+      const accNum = document.getElementById('login-account').value.trim();
+      const pass = document.getElementById('login-password').value;
+      const accounts = getAccounts();
+      const account = accounts.find(a => a.accountNumber === accNum && a.password === pass);
+
+      if (!account) {
+        alert('Conta ou senha incorretos.');
+        return;
+      }
+
+      if (account.status === 'closed') {
+        alert('Esta conta foi encerrada. Entre em contato com o administrador.');
+        return;
+      }
+
+      currentUser = { role: 'client', accountNumber: account.accountNumber };
+      lastSimulation = null;
+      document.getElementById('fin-result-box').classList.add('hidden');
+      document.getElementById('fin-placeholder').classList.remove('hidden');
+
+      document.getElementById('auth-view').classList.add('hidden');
+      document.getElementById('client-view').classList.remove('hidden');
+      document.getElementById('user-nav').classList.remove('hidden');
+      document.getElementById('nav-user-name').textContent = `Olá, ${account.name}`;
+      renderClientDashboard();
+    }
+
+    function logout() {
+      currentUser = null;
+      lastSimulation = null;
+      document.getElementById('auth-view').classList.remove('hidden');
+      document.getElementById('admin-view').classList.add('hidden');
+      document.getElementById('client-view').classList.add('hidden');
+      document.getElementById('user-nav').classList.add('hidden');
+    }
+
+    function generateCardData() {
+      const randDigits = (len) => Array.from({ length: len }, () => Math.floor(Math.random() * 10)).join('');
+      const number = `4532 ${randDigits(4)} ${randDigits(4)} ${randDigits(4)}`;
+      const expYear = (new Date().getFullYear() + 5).toString().slice(-2);
+      const expMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      const cvv = randDigits(3);
+      return { number, expiry: `${expMonth}/${expYear}`, cvv };
+    }
+
+    function createAccount(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-name').value.trim();
+      const cpf = document.getElementById('new-cpf').value.trim();
+      const deposit = parseFloat(document.getElementById('new-deposit').value) || 0;
+      const password = document.getElementById('new-password').value;
+
+      const accounts = getAccounts();
+      const nextNum = accounts.length > 0
+        ? String(Math.max(...accounts.map(a => parseInt(a.accountNumber))) + 1)
+        : '1001';
+
+      const card = generateCardData();
+      const newAcc = {
+        accountNumber: nextNum,
+        name,
+        cpf,
+        password,
+        balance: deposit,
+        status: 'active',
+        card,
+        transactions: deposit > 0 ? [{
+          date: new Date().toLocaleString('pt-BR'),
+          type: 'deposit',
+          description: 'Depósito Inicial',
+          amount: deposit
+        }] : []
+      };
+
+      accounts.push(newAcc);
+      saveAccounts(accounts);
+
+      e.target.reset();
+      showCardPreview(newAcc);
+      renderAdminDashboard();
+      alert(`Conta ${nextNum} criada com sucesso! O cartão de débito está pronto para impressão.`);
+    }
+
+    function showCardPreview(account) {
+      document.getElementById('no-card-msg').classList.add('hidden');
+      const area = document.getElementById('printable-card-area');
+      area.classList.remove('hidden');
+
+      document.getElementById('card-display-number').textContent = account.card.number;
+      document.getElementById('card-display-name').textContent = account.name;
+      document.getElementById('card-display-exp').textContent = account.card.expiry;
+      document.getElementById('card-display-cvv').textContent = account.card.cvv;
+      document.getElementById('card-display-account').textContent = account.accountNumber;
+    }
+
+    function viewCardByAcc(accNum) {
+      const acc = getAccounts().find(a => a.accountNumber === accNum);
+      if (acc) showCardPreview(acc);
+    }
+
+    function closeAccount(accNum) {
+      const accounts = getAccounts();
+      const acc = accounts.find(a => a.accountNumber === accNum);
+      if (!acc) return;
+
+      if (acc.balance > 0) {
+        alert(`Não é possível encerrar a conta ${accNum} pois ainda possui saldo de ${formatCurrency(acc.balance)}. O cliente deve sacar todo o valor primeiro.`);
+        return;
+      }
+
+      if (confirm(`Tem certeza que deseja encerrar a conta ${accNum} de ${acc.name}?`)) {
+        acc.status = 'closed';
+        saveAccounts(accounts);
+        renderAdminDashboard();
+      }
+    }
+
+    function renderAdminDashboard() {
+      const accounts = getAccounts();
+      const activeAccs = accounts.filter(a => a.status === 'active');
+      const closedAccs = accounts.filter(a => a.status === 'closed');
+      const totalBalance = activeAccs.reduce((sum, a) => sum + a.balance, 0);
+
+      document.getElementById('admin-total-balance').textContent = formatCurrency(totalBalance);
+      document.getElementById('admin-active-accounts').textContent = activeAccs.length;
+      document.getElementById('admin-closed-accounts').textContent = closedAccs.length;
+
+      const tbody = document.getElementById('admin-accounts-table');
+      tbody.innerHTML = accounts.map(acc => `
+        <tr>
+          <td><strong>${acc.accountNumber}</strong></td>
+          <td>${acc.name}</td>
+          <td>${acc.cpf}</td>
+          <td>${formatCurrency(acc.balance)}</td>
+          <td>
+            <span class="badge ${acc.status === 'active' ? 'badge-active' : 'badge-closed'}">
+              ${acc.status === 'active' ? 'Ativa' : 'Encerrada'}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm" onclick="viewCardByAcc('${acc.accountNumber}')">Cartão</button>
+            ${acc.status === 'active'
+              ? `<button class="btn btn-danger btn-sm" onclick="closeAccount('${acc.accountNumber}')">Encerrar</button>`
+              : ''}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function handleTransaction(type) {
+      const amount = parseFloat(document.getElementById('tx-amount').value);
+      const customDesc = document.getElementById('tx-desc').value.trim();
+
+      if (isNaN(amount) || amount <= 0) {
+        alert('Informe um valor válido maior que zero.');
+        return;
+      }
+
+      const accounts = getAccounts();
+      const acc = accounts.find(a => a.accountNumber === currentUser.accountNumber);
+
+      if (type === 'withdraw' && amount > acc.balance) {
+        alert('Saldo insuficiente para realizar este saque.');
+        return;
+      }
+
+      if (type === 'deposit') {
+        acc.balance += amount;
+      } else {
+        acc.balance -= amount;
+      }
+
+      acc.transactions.unshift({
+        date: new Date().toLocaleString('pt-BR'),
+        type,
+        description: customDesc || (type === 'deposit' ? 'Depósito em Conta' : 'Saque em Conta'),
+        amount
+      });
+
+      saveAccounts(accounts);
+      document.getElementById('tx-amount').value = '';
+      document.getElementById('tx-desc').value = '';
+      renderClientDashboard();
+    }
+
+    // Cálculo de Simulação de Financiamento (PRICE e SAC)
+    function simulateFinancing(e) {
+      e.preventDefault();
+      const purpose = document.getElementById('fin-purpose').value;
+      const principal = parseFloat(document.getElementById('fin-amount').value);
+      const months = parseInt(document.getElementById('fin-months').value);
+      const ratePercent = parseFloat(document.getElementById('fin-rate').value);
+      const system = document.getElementById('fin-system').value;
+
+      const i = ratePercent / 100;
+      const schedule = [];
+      let balance = principal;
+      let totalPayable = 0;
+      let totalInterest = 0;
+
+      if (system === 'PRICE') {
+        const pmt = principal * (i * Math.pow(1 + i, months)) / (Math.pow(1 + i, months) - 1);
+        for (let m = 1; m <= months; m++) {
+          const interest = balance * i;
+          const amortization = pmt - interest;
+          balance = Math.max(0, balance - amortization);
+          totalPayable += pmt;
+          totalInterest += interest;
+          schedule.push({ month: m, installment: pmt, interest, amortization, balance });
+        }
+      } else {
+        // Sistema SAC
+        const amortization = principal / months;
+        for (let m = 1; m <= months; m++) {
+          const interest = balance * i;
+          const pmt = amortization + interest;
+          balance = Math.max(0, balance - amortization);
+          totalPayable += pmt;
+          totalInterest += interest;
+          schedule.push({ month: m, installment: pmt, interest, amortization, balance });
+        }
+      }
+
+      lastSimulation = {
+        purpose,
+        principal,
+        months,
+        ratePercent,
+        system,
+        firstInstallment: schedule[0].installment,
+        totalPayable
+      };
+
+      document.getElementById('fin-placeholder').classList.add('hidden');
+      document.getElementById('fin-result-box').classList.remove('hidden');
+
+      document.getElementById('sim-first-installment').textContent = formatCurrency(schedule[0].installment);
+      document.getElementById('sim-last-installment').textContent = formatCurrency(schedule[schedule.length - 1].installment);
+      document.getElementById('sim-total-interest').textContent = formatCurrency(totalInterest);
+      document.getElementById('sim-total-payable').textContent = formatCurrency(totalPayable);
+
+      document.getElementById('sim-schedule-table').innerHTML = schedule.map(row => `
+        <tr>
+          <td>${row.month}ª</td>
+          <td><strong>${formatCurrency(row.installment)}</strong></td>
+          <td>${formatCurrency(row.interest)}</td>
+          <td>${formatCurrency(row.amortization)}</td>
+          <td>${formatCurrency(row.balance)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Contratação do Financiamento Simulado
+    function contractFinancing() {
+      if (!lastSimulation) return;
+
+      const msg = `Confirmar contratação de ${lastSimulation.purpose} no valor de ${formatCurrency(lastSimulation.principal)} em ${lastSimulation.months}x (${lastSimulation.system})? O valor será creditado imediatamente em sua conta.`;
+      if (!confirm(msg)) return;
+
+      const accounts = getAccounts();
+      const acc = accounts.find(a => a.accountNumber === currentUser.accountNumber);
+
+      acc.balance += lastSimulation.principal;
+      acc.transactions.unshift({
+        date: new Date().toLocaleString('pt-BR'),
+        type: 'deposit',
+        description: `Liberação ${lastSimulation.purpose} (${lastSimulation.months}x - ${lastSimulation.system})`,
+        amount: lastSimulation.principal
+      });
+
+      saveAccounts(accounts);
+      renderClientDashboard();
+      alert('Financiamento aprovado e valor creditado com sucesso em sua conta!');
+    }
+
+    function renderClientDashboard() {
+      const accounts = getAccounts();
+      const acc = accounts.find(a => a.accountNumber === currentUser.accountNumber);
+      if (!acc) return;
+
+      document.getElementById('client-balance').textContent = formatCurrency(acc.balance);
+      document.getElementById('client-account-num').textContent = acc.accountNumber;
+      document.getElementById('client-status').textContent = acc.status === 'active' ? 'Ativa' : 'Encerrada';
+
+      document.getElementById('client-card-container').innerHTML = `
+        <div id="printable-card-area" class="debit-card-wrapper">
+          <div class="debit-card">
+            <div class="bank-logo">
+              <span>NeoBank</span>
+              <span style="font-size: 0.8rem; opacity: 0.8;">DÉBITO</span>
+            </div>
+            <div class="chip"></div>
+            <div class="card-number">${acc.card.number}</div>
+            <div class="card-footer">
+              <div>
+                <span>Titular</span>
+                <strong>${acc.name}</strong>
+              </div>
+              <div>
+                <span>Validade</span>
+                <strong>${acc.card.expiry}</strong>
+              </div>
+              <div>
+                <span>CVV</span>
+                <strong>${acc.card.cvv}</strong>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary no-print" onclick="window.print()">🖨️ Imprimir Meu Cartão</button>
+        </div>
+      `;
+
+      const tbody = document.getElementById('client-statement-table');
+      if (acc.transactions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">Nenhuma movimentação registrada.</td></tr>';
+      } else {
+        tbody.innerHTML = acc.transactions.map(tx => `
+          <tr>
+            <td>${tx.date}</td>
+            <td>${tx.type === 'deposit' ? 'Entrada' : 'Saída'}</td>
+            <td>${tx.description}</td>
+            <td class="${tx.type === 'deposit' ? 'text-success' : 'text-danger'}">
+              ${tx.type === 'deposit' ? '+' : '-'} ${formatCurrency(tx.amount)}
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    initStorage();
+  </script>
+</body>
+</html>
